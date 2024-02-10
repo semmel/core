@@ -2,9 +2,9 @@
 /** @author Brian Cavalier */
 /** @author John Hann */
 
-import Map from '../fusion/Map'
 import Pipe from '../sink/Pipe'
 import { Stream, Sink, Scheduler, Time, Disposable } from '@most/types'
+import { FL, Map } from '../fusion/FantasyLand'
 
 /**
  * Transform each value in the stream by applying f to each
@@ -12,7 +12,7 @@ import { Stream, Sink, Scheduler, Time, Disposable } from '@most/types'
  * @param stream stream to map
  * @returns stream containing items transformed by f
  */
-export const map = <A, B>(f: (a: A) => B, stream: Stream<A>): Stream<B> =>
+export const map = <A, B>(f: (a: A) => B, stream: Stream<A>): FL<B> =>
   Map.create(f, stream)
 
 /**
@@ -30,14 +30,15 @@ export const constant = <A, B>(x: B, stream: Stream<A>): Stream<B> =>
 * @param stream stream to tap
 * @returns new stream containing the same items as this stream
 */
-export const tap = <A>(f: (a: A) => unknown, stream: Stream<A>): Stream<A> =>
+export const tap = <A>(f: (a: A) => unknown, stream: Stream<A>): FL<A> =>
   new Tap(f, stream)
 
-class Tap<A> implements Stream<A> {
+class Tap<A> extends FL<A> /* implements Stream<A> */ {
   private readonly f: (a: A) => unknown;
   private readonly source: Stream<A>;
 
   constructor(f: (a: A) => unknown, source: Stream<A>) {
+    super()
     this.source = source
     this.f = f
   }

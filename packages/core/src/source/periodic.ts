@@ -4,20 +4,22 @@
 
 import { propagateEventTask } from '../scheduler/PropagateTask'
 import { periodic as schedulePeriodic } from '@most/scheduler'
-import { Stream, Sink, Scheduler, Disposable } from '@most/types'
+import { Sink, Scheduler, Disposable } from '@most/types'
+import { FL } from '../fusion/FantasyLand'
 
 /**
  * Create a stream of events that occur at a regular period
  * @param {Number} period periodicity of events
  * @returns {Stream} new stream of periodic events, the event value is undefined
  */
-export const periodic = (period: number): Stream<void> =>
+export const periodic = (period: number): FL<void> =>
   new Periodic(period)
 
-class Periodic implements Stream<void> {
+class Periodic extends FL<void> {
   private readonly period: number;
 
   constructor(period: number) {
+    super()
     this.period = period
   }
 

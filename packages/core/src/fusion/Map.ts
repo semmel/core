@@ -3,17 +3,19 @@
 /** @author John Hann */
 
 import Pipe from '../sink/Pipe'
-import Filter from './Filter'
-import FilterMap from './FilterMap'
+// import Filter from './Filter'
+// import FilterMap from './FilterMap'
 import { compose } from '@most/prelude'
 import { isCanonicalEmpty, empty } from '../source/empty'
 import { Stream, Sink, Scheduler, Time, Disposable } from '@most/types'
+import { FL } from './FantasyLand'
 
-export default class Map<A, B> implements Stream<B> {
+export default class Map<A, B> extends FL<B> {
   readonly f: (a: A) => B;
   readonly source: Stream<A>;
 
   constructor(f: (a: A) => B, source: Stream<A>) {
+    super()
     this.f = f
     this.source = source
   }
@@ -38,9 +40,10 @@ export default class Map<A, B> implements Stream<B> {
       return new Map(compose(f, source.f), source.source)
     }
 
-    if (source instanceof Filter) {
-      return new FilterMap(source.p, f, source.source)
-    }
+    // TODO
+    // if (source instanceof Filter) {
+    //   return new FilterMap(source.p, f, source.source)
+    // }
 
     return new Map(f, source)
   }
